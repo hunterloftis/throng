@@ -40,7 +40,9 @@ Defaults to number of CPUs available.
 
 Minimum time to keep the Cluster alive
 (by forking new workers if any die).
-In milliseconds.
+
+In milliseconds; defaults to zero.
+
 (Infinity = stay up forever)
 
 #### grace
@@ -48,6 +50,7 @@ In milliseconds.
 Grace period for worker shutdown.
 Once each worker is sent SIGTERM, the grace period starts.
 Any workers still alive when it ends are killed.
+
 In milliseconds; defaults to 5000.
 
 ## Example
