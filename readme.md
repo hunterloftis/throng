@@ -3,8 +3,6 @@
 Dead-simple one-liner for clustered apps.
 
 ```js
-var throng = require('throng');
-
 throng(start, { workers: 3 });
 
 function start() {
@@ -58,9 +56,19 @@ In milliseconds; defaults to 5000.
 This is how you might use throng in a web server:
 
 ```js
+var throng = require('throng');
+var config = require('config');
+
 throng(start, {
   workers: config.single ? 1 : null,
   lifetime: Infinity,
   grace: 4000
 });
 ```
+
+## Tests
+
+```
+npm test
+```
+
