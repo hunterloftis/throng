@@ -23,6 +23,12 @@ function start() {
 npm install --save throng
 ```
 
+## Use
+
+```js
+throng(startFunction, options);
+```
+
 ## Options
 
 #### workers
