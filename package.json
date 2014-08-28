@@ -1,0 +1,26 @@
+{
+  "name": "throng",
+  "version": "1.0.0",
+  "description": "A simple worker-manager for clustered apps",
+  "keywords": [
+    "cluster",
+    "worker",
+    "process"
+  ],
+  "repository": "hunterloftis/throng",
+  "homepage": "https://github.com/hunterloftis/throng",
+  "bugs": "https://github.com/hunterloftis/throng/issues",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "engines": {
+    "node": ">= 0.10.x"
+  },
+  "author": "Hunter Loftis <hunter@hunterloftis.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "mocha": "^1.21.4"
+  }
+}
