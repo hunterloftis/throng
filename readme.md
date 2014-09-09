@@ -57,10 +57,9 @@ This is how you might use throng in a web server:
 
 ```js
 var throng = require('throng');
-var config = require('config');
 
 throng(start, {
-  workers: config.single ? 1 : null,
+  workers: 4,
   lifetime: Infinity,
   grace: 4000
 });
