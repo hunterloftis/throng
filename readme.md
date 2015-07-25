@@ -51,6 +51,19 @@ Any workers still alive when it ends are killed.
 
 In milliseconds; defaults to 5000.
 
+#### memoryLimit
+
+Memory limit for individual processes.
+The master process will kill a child worker if it exceeds that limit.
+
+Value in bytes.
+
+#### monitorInterval
+
+At what interval should the monitoring functions be executed.
+
+In milliseconds; defaults to 30000.
+
 ## Example
 
 This is how you might use throng in a web server:
@@ -65,9 +78,22 @@ throng(start, {
 });
 ```
 
+This is how you start throng with memory limit monitoring:
+
+```js
+var throng = require('throng');
+
+throng(start, {
+  workers: 4,
+  lifetime: Infinity,
+  grace: 4000,
+  memoryLimit: 536870912, // 512 MB
+  monitorInterval: 150
+});
+```
+
 ## Tests
 
 ```
 npm test
 ```
-
