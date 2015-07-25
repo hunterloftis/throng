@@ -8,6 +8,7 @@ var exitCmd = 'node ' + path.join(__dirname, 'fixtures', 'exit');
 var keepaliveCmd = 'node ' + path.join(__dirname, 'fixtures', 'keepalive');
 var cpusCmd = 'node ' + path.join(__dirname, 'fixtures', 'cpus');
 var gracefulCmd = 'node ' + path.join(__dirname, 'fixtures', 'graceful');
+var memoryLimitCmd = 'node ' + path.join(__dirname, 'fixtures', 'memory_limit');
 
 function run(cmd, context, done) {
   context.startTime = Date.now();
@@ -106,4 +107,25 @@ describe('throng()', function() {
     });
 
   });
+
+  describe('with memory monitoring', function() {
+
+    describe('with 3 workers that exceeed memory limit', function() {
+      before(function(done) {
+        run(memoryLimitCmd, this, done);
+      });
+      it('should start 3 workers', function() {
+        var starts = this.stdout.match(/worker/g).length;
+        assert.ok(starts > 3);
+      });
+      it('should kill all workers for excessive memory usage', function() {
+        var kills = this.stdout.match(/killing/g).length;
+        assert.equal(kills, 3);
+      });
+      it('should restart killed workers', function() {
+        var restart = this.stdout.match(/killing.*\nworker/g);
+        assert.isNotNull(restart);
+      });
+    })
+  })
 });
