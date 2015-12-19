@@ -6,10 +6,12 @@ Dead-simple one-liner for clustered apps.
 throng(start, { workers: 3 });
 
 function start() {
-  console.log('Started worker');
+  var workerId = arguments[0];
+
+  console.log('Started worker: ' + workerId);
 
   process.on('SIGTERM', function() {
-    console.log('Worker exiting');
+    console.log('Worker ' +workerId+ ' exiting');
     process.exit();
   });
 }
