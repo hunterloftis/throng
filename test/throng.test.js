@@ -1,38 +1,15 @@
 var assert = require('chai').assert;
 var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
+var child = require('child_process');
 var path = require('path');
 var cpus = require('os').cpus().length;
 
-var exitCmd = 'node ' + path.join(__dirname, 'fixtures', 'exit');
-var keepaliveCmd = 'node ' + path.join(__dirname, 'fixtures', 'keepalive');
-var cpusCmd = 'node ' + path.join(__dirname, 'fixtures', 'cpus');
-var gracefulCmd = 'node ' + path.join(__dirname, 'fixtures', 'graceful');
-
-function run(cmd, context, done) {
-  context.startTime = Date.now();
-  exec(cmd, function(err, stdout, stderr) {
-    this.stdout = stdout;
-    this.endTime = Date.now();
-    done();
-  }.bind(context));
-}
-
-function runSignal(file, context, done) {
-  var child = spawn('node', [file]);
-  context.stdout = '';
-  context.startTime = Date.now();
-  child.stdout.on('data', function(data) {
-    this.stdout += data.toString();
-  }.bind(context));
-  child.on('close', function(code) {
-    context.endTime = Date.now();
-    done();
-  });
-  setTimeout(function() {
-    child.kill();
-  }, 250);
-}
+var exitCmd = path.join(__dirname, 'fixtures', 'exit');
+var keepaliveCmd = path.join(__dirname, 'fixtures', 'keepalive');
+var cpusCmd = path.join(__dirname, 'fixtures', 'cpus');
+var gracefulCmd = path.join(__dirname, 'fixtures', 'graceful');
+var killCmd = path.join(__dirname, 'fixtures', 'kill');
 
 describe('throng()', function() {
 
@@ -76,13 +53,13 @@ describe('throng()', function() {
 
     describe('with 3 workers that exit gracefully', function() {
       before(function(done) {
-        runSignal(path.join(__dirname, 'fixtures', 'graceful'), this, done);
+        runSignal(gracefulCmd, this, done);
       });
-      it('should start 3 workers', function() {
+      it('starts 3 workers', function() {
         var starts = this.stdout.match(/worker/g).length;
         assert.equal(starts, 3);
       });
-      it('should allow the workers to shut down', function() {
+      it('allows the workers to shut down', function() {
         var exits = this.stdout.match(/exiting/g).length;
         assert.equal(exits, 3);
       });
@@ -90,7 +67,7 @@ describe('throng()', function() {
 
     describe('with 3 workers that fail to exit', function() {
       before(function(done) {
-        runSignal(path.join(__dirname, 'fixtures', 'kill'), this, done);
+        runSignal(killCmd, this, done);
       });
       it('should start 3 workers', function() {
         var starts = this.stdout.match(/ah ha ha ha/g).length;
@@ -101,9 +78,34 @@ describe('throng()', function() {
         assert.equal(exits, 3);
       });
       it('should kill the workers after 250ms', function() {
-        assert.closeTo(this.endTime - this.startTime, 500, 50);
+        assert.closeTo(this.endTime - this.startTime, 1000, 100);
       });
     });
 
   });
 });
+
+function run(cmd, context, done) {
+  context.startTime = Date.now();
+  exec('node ' + cmd, function(err, stdout, stderr) {
+    this.stdout = stdout;
+    this.endTime = Date.now();
+    done();
+  }.bind(context));
+}
+
+function runSignal(file, context, done) {
+  var child = spawn('node', [file]);
+  context.stdout = '';
+  context.startTime = Date.now();
+  child.stdout.on('data', function(data) {
+    this.stdout += data.toString();
+  }.bind(context));
+  child.on('close', function(code) {
+    context.endTime = Date.now();
+    done();
+  });
+  setTimeout(function() {
+    child.kill();
+  }, 750).unref();
+}

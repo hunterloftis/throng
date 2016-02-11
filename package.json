@@ -20,7 +20,7 @@
   "author": "Hunter Loftis <hunter@hunterloftis.com>",
   "license": "MIT",
   "devDependencies": {
-    "chai": "^1.9.1",
-    "mocha": "^1.21.4"
+    "chai": "3.5.0",
+    "mocha": "2.4.5"
   }
 }
