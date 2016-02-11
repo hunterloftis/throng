@@ -6,7 +6,7 @@ var path = require('path');
 var cpus = require('os').cpus().length;
 
 var exitCmd = path.join(__dirname, 'fixtures', 'exit');
-var lifetimeCmd = path.join(__dirname, 'fixtures', 'keepalive');
+var lifetimeCmd = path.join(__dirname, 'fixtures', 'lifetime');
 var cpusCmd = path.join(__dirname, 'fixtures', 'cpus');
 var gracefulCmd = path.join(__dirname, 'fixtures', 'graceful');
 var killCmd = path.join(__dirname, 'fixtures', 'kill');
@@ -26,7 +26,7 @@ describe('throng()', function() {
       });
     });
 
-    describe('with lifetime of 250ms', function() {
+    describe('with lifetime of 500ms', function() {
       before(function(done) {
         run(lifetimeCmd, this, done);
       });
@@ -34,8 +34,8 @@ describe('throng()', function() {
         var starts = this.stdout.match(/worker/g).length;
         assert.ok(starts > 3);
       });
-      it('should keep workers running for at least 250ms', function() {
-        assert.ok(this.endTime - this.startTime > 250);
+      it('should keep workers running for at least 500ms', function() {
+        assert.ok(this.endTime - this.startTime > 500);
       });
     });
 
@@ -44,6 +44,7 @@ describe('throng()', function() {
         this.timeout(4000);
         var child = run(infiniteCmd, this, done);
         setTimeout(function() {
+          console.log('killing child');
           child.kill();
         }, 1500);
       });
