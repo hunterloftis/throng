@@ -41,6 +41,7 @@ describe('throng()', function() {
 
     describe('with no lifetime specified', function() {
       before(function(done) {
+        this.timeout(4000);
         var child = run(infiniteCmd, this, done);
         setTimeout(function() {
           child.kill();
