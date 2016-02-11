@@ -1,6 +1,6 @@
 {
   "name": "throng",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "A simple worker-manager for clustered apps",
   "keywords": [
     "cluster",
