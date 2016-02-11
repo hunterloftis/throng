@@ -6,7 +6,7 @@ var path = require('path');
 var cpus = require('os').cpus().length;
 
 var exitCmd = path.join(__dirname, 'fixtures', 'exit');
-var keepaliveCmd = path.join(__dirname, 'fixtures', 'keepalive');
+var lifetimeCmd = path.join(__dirname, 'fixtures', 'lifetime');
 var cpusCmd = path.join(__dirname, 'fixtures', 'cpus');
 var gracefulCmd = path.join(__dirname, 'fixtures', 'graceful');
 var killCmd = path.join(__dirname, 'fixtures', 'kill');
@@ -15,7 +15,7 @@ describe('throng()', function() {
 
   describe('with a start function and 3 instances', function() {
 
-    describe('without keepalive', function() {
+    describe('with lifetime of 0', function() {
       before(function(done) {
         run(exitCmd, this, done);
       });
@@ -25,9 +25,9 @@ describe('throng()', function() {
       });
     });
 
-    describe('with keepalive of 250ms', function() {
+    describe('with lifetime of 250ms', function() {
       before(function(done) {
-        run(keepaliveCmd, this, done);
+        run(lifetimeCmd, this, done);
       });
       it('should start 3 workers repeatedly', function() {
         var starts = this.stdout.match(/worker/g).length;
