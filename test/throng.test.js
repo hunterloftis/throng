@@ -43,10 +43,7 @@ describe('throng()', function() {
       before(function(done) {
         this.timeout(4000);
         var child = run(infiniteCmd, this, done);
-        setTimeout(function() {
-          console.log('killing child');
-          child.kill();
-        }, 1500);
+        setTimeout(function() { child.kill(); }.bind(this), 1500);
       });
       it('should start 3 workers repeatedly', function() {
         var starts = this.stdout.match(/worker/g).length;
@@ -72,7 +69,8 @@ describe('throng()', function() {
 
     describe('with 3 workers that exit gracefully', function() {
       before(function(done) {
-        runSignal(gracefulCmd, this, done);
+        var child = run(gracefulCmd, this, done);
+        setTimeout(function() { child.kill() }, 750);
       });
       it('starts 3 workers', function() {
         var starts = this.stdout.match(/worker/g).length;
@@ -86,7 +84,8 @@ describe('throng()', function() {
 
     describe('with 3 workers that fail to exit', function() {
       before(function(done) {
-        runSignal(killCmd, this, done);
+        var child = run(killCmd, this, done);
+        setTimeout(function() { child.kill() }, 750);
       });
       it('should start 3 workers', function() {
         var starts = this.stdout.match(/ah ha ha ha/g).length;
@@ -104,16 +103,7 @@ describe('throng()', function() {
   });
 });
 
-function run(cmd, context, done) {
-  context.startTime = Date.now();
-  return exec('node ' + cmd, function(err, stdout, stderr) {
-    context.stdout = stdout;
-    context.endTime = Date.now();
-    done();
-  });
-}
-
-function runSignal(file, context, done) {
+function run(file, context, done) {
   var child = spawn('node', [file]);
   context.stdout = '';
   context.startTime = Date.now();
@@ -124,7 +114,5 @@ function runSignal(file, context, done) {
     context.endTime = Date.now();
     done();
   });
-  setTimeout(function() {
-    child.kill();
-  }, 750).unref();
+  return child;
 }
