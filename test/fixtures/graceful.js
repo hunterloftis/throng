@@ -1,12 +1,12 @@
-var throng = require('../..');
+'use strict';
 
-throng(start, { workers: 3 });
+const throng = require('../../lib/throng');
 
-function start() {
+throng(3, () => {
   console.log('worker');
 
   process.on('SIGTERM', function() {
     console.log('exiting');
     process.exit();
   });
-}
+});

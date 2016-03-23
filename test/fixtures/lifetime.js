@@ -1,8 +1,13 @@
-var throng = require('../..');
+'use strict';
 
-throng(start, { workers: 3, lifetime: 500 });
+const throng = require('../../lib/throng');
 
-function start() {
+const config = {
+  workers: 3,
+  lifetime: 500
+};
+
+throng(config, () => {
   console.log('worker');
   process.exit();
-}
+});

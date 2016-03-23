@@ -1,15 +1,17 @@
-var throng = require('../..');
+'use strict';
 
-throng(start, {
+const throng = require('../../lib/throng');
+
+const config = {
   workers: 3,
   lifetime: 0,
   grace: 250
-});
+};
 
-function start() {
+throng(config, () => {
   console.log('ah ha ha ha');
 
   process.on('SIGTERM', function() {
     console.log('stayin alive');
   });
-}
+});
