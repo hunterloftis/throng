@@ -1,6 +1,6 @@
 # Throng
 
-Dead-simple one-liner for clustered apps.
+Dead-simple one-liner for clustered Node.js apps.
 
 Runs X workers and respawns them if they go down.
 Correctly handles signals from the OS.
@@ -52,12 +52,12 @@ Handle signals (for cleanup on a kill signal, for instance):
 ```js
 throng((id) => {
   console.log(`Started worker ${id}`);
-});
 
-process.on('SIGTERM', function() {
-  console.log(`Worker ${id} exiting`);
-  console.log('Cleanup here');
-  process.exit();
+  process.on('SIGTERM', function() {
+    console.log(`Worker ${id} exiting`);
+    console.log('Cleanup here');
+    process.exit();
+  });
 });
 ```
 
