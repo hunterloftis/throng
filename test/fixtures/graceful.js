@@ -1,3 +1,5 @@
+'use strict';
+
 var throng = require('../..');
 
 throng(3, () => {
@@ -6,5 +8,5 @@ throng(3, () => {
   process.on('SIGTERM', function() {
     console.log('exiting');
     process.exit();
-  });  
+  });
 });

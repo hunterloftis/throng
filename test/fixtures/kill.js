@@ -1,3 +1,5 @@
+'use strict';
+
 var throng = require('../..');
 
 const config = {
@@ -11,5 +13,5 @@ throng(config, () => {
 
   process.on('SIGTERM', function() {
     console.log('stayin alive');
-  });  
+  });
 });

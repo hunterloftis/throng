@@ -1,3 +1,5 @@
+'use strict';
+
 var throng = require('../..');
 
 throng({ lifetime: 0 }, () => {

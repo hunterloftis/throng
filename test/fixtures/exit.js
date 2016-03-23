@@ -1,6 +1,13 @@
-var throng = require('../..');
+'use strict';
 
-throng(3, () => {
+const throng = require('../..');
+
+const config = {
+  workers: 3,
+  lifetime: 0
+};
+
+throng(config, () => {
   console.log('worker');
   process.exit();
 });
