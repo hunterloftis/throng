@@ -1,17 +1,18 @@
 'use strict';
 
-var assert = require('chai').assert;
-var exec = require('child_process').exec;
-var spawn = require('child_process').spawn;
-var child = require('child_process');
-var path = require('path');
+const assert = require('chai').assert;
+const exec = require('child_process').exec;
+const spawn = require('child_process').spawn;
+const child = require('child_process');
+const path = require('path');
+const cpuCount = require('os').cpus().length;
 
-var exitCmd = path.join(__dirname, 'fixtures', 'exit');
-var lifetimeCmd = path.join(__dirname, 'fixtures', 'lifetime');
-var cpusCmd = path.join(__dirname, 'fixtures', 'cpus');
-var gracefulCmd = path.join(__dirname, 'fixtures', 'graceful');
-var killCmd = path.join(__dirname, 'fixtures', 'kill');
-var infiniteCmd = path.join(__dirname, 'fixtures', 'infinite');
+const exitCmd = path.join(__dirname, 'fixtures', 'exit');
+const lifetimeCmd = path.join(__dirname, 'fixtures', 'lifetime');
+const cpusCmd = path.join(__dirname, 'fixtures', 'cpus');
+const gracefulCmd = path.join(__dirname, 'fixtures', 'graceful');
+const killCmd = path.join(__dirname, 'fixtures', 'kill');
+const infiniteCmd = path.join(__dirname, 'fixtures', 'infinite');
 
 describe('throng()', function() {
 
@@ -62,7 +63,7 @@ describe('throng()', function() {
     });
     it('starts one worker', function() {
       var starts = this.stdout.match(/worker/g).length;
-      assert.equal(starts, 1);
+      assert.equal(starts, cpuCount);
     });
   });
 
