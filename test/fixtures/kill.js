@@ -1,6 +1,6 @@
 'use strict';
 
-var throng = require('../..');
+const throng = require('../lib/throng');
 
 const config = {
   workers: 3,

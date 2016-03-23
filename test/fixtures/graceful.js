@@ -1,6 +1,6 @@
 'use strict';
 
-var throng = require('../..');
+const throng = require('../lib/throng');
 
 throng(3, () => {
   console.log('worker');

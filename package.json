@@ -10,7 +10,7 @@
   "repository": "hunterloftis/throng",
   "homepage": "https://github.com/hunterloftis/throng",
   "bugs": "https://github.com/hunterloftis/throng/issues",
-  "main": "index.js",
+  "main": "lib/throng.js",
   "scripts": {
     "test": "mocha"
   },
