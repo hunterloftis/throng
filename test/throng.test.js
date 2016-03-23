@@ -1,16 +1,18 @@
-var assert = require('chai').assert;
-var exec = require('child_process').exec;
-var spawn = require('child_process').spawn;
-var child = require('child_process');
-var path = require('path');
-var cpus = require('os').cpus().length;
+'use strict';
 
-var exitCmd = path.join(__dirname, 'fixtures', 'exit');
-var lifetimeCmd = path.join(__dirname, 'fixtures', 'lifetime');
-var cpusCmd = path.join(__dirname, 'fixtures', 'cpus');
-var gracefulCmd = path.join(__dirname, 'fixtures', 'graceful');
-var killCmd = path.join(__dirname, 'fixtures', 'kill');
-var infiniteCmd = path.join(__dirname, 'fixtures', 'infinite');
+const assert = require('chai').assert;
+const exec = require('child_process').exec;
+const spawn = require('child_process').spawn;
+const child = require('child_process');
+const path = require('path');
+const cpuCount = require('os').cpus().length;
+
+const exitCmd = path.join(__dirname, 'fixtures', 'exit');
+const lifetimeCmd = path.join(__dirname, 'fixtures', 'lifetime');
+const cpusCmd = path.join(__dirname, 'fixtures', 'cpus');
+const gracefulCmd = path.join(__dirname, 'fixtures', 'graceful');
+const killCmd = path.join(__dirname, 'fixtures', 'kill');
+const infiniteCmd = path.join(__dirname, 'fixtures', 'infinite');
 
 describe('throng()', function() {
 
@@ -20,7 +22,7 @@ describe('throng()', function() {
       before(function(done) {
         run(exitCmd, this, done);
       });
-      it('should start 3 workers that immediately exit', function() {
+      it('starts 3 workers that immediately exit', function() {
         var starts = this.stdout.match(/worker/g).length;
         assert.equal(starts, 3);
       });
@@ -30,11 +32,11 @@ describe('throng()', function() {
       before(function(done) {
         run(lifetimeCmd, this, done);
       });
-      it('should start 3 workers repeatedly', function() {
+      it('starts 3 workers repeatedly', function() {
         var starts = this.stdout.match(/worker/g).length;
         assert.ok(starts > 3);
       });
-      it('should keep workers running for at least 500ms', function() {
+      it('keeps workers running for at least 500ms', function() {
         assert.ok(this.endTime - this.startTime > 500);
       });
     });
@@ -43,14 +45,14 @@ describe('throng()', function() {
       before(function(done) {
         this.timeout(4000);
         var child = run(infiniteCmd, this, done);
-        setTimeout(function() { child.kill(); }.bind(this), 1500);
+        setTimeout(function() { child.kill(); }.bind(this), 2000);
       });
-      it('should start 3 workers repeatedly', function() {
+      it('starts 3 workers repeatedly', function() {
         var starts = this.stdout.match(/worker/g).length;
-        assert.ok(starts > 6);
+        assert.ok(starts > 3);
       });
-      it('should keep workers running until killed externally', function() {
-        assert.closeTo(this.endTime - this.startTime, 1500, 100);
+      it('keeps workers running until killed externally', function() {
+        assert.closeTo(this.endTime - this.startTime, 2000, 200);
       });
     });
   });
@@ -59,9 +61,9 @@ describe('throng()', function() {
     before(function(done) {
       run(cpusCmd, this, done);
     });
-    it('should start workers equal to the number of cpus', function() {
+    it('starts one worker', function() {
       var starts = this.stdout.match(/worker/g).length;
-      assert.equal(starts, cpus);
+      assert.equal(starts, cpuCount);
     });
   });
 
@@ -87,15 +89,15 @@ describe('throng()', function() {
         var child = run(killCmd, this, done);
         setTimeout(function() { child.kill() }, 750);
       });
-      it('should start 3 workers', function() {
+      it('starts 3 workers', function() {
         var starts = this.stdout.match(/ah ha ha ha/g).length;
         assert.equal(starts, 3);
       });
-      it('should notify the workers that they should exit', function() {
+      it('notifies the workers that they should exit', function() {
         var exits = this.stdout.match(/stayin alive/g).length;
         assert.equal(exits, 3);
       });
-      it('should kill the workers after 250ms', function() {
+      it('kills the workers after 250ms', function() {
         assert.closeTo(this.endTime - this.startTime, 1000, 100);
       });
     });

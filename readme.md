@@ -1,18 +1,24 @@
 # Throng
 
-Dead-simple one-liner for clustered apps.
+Dead-simple one-liner for clustered Node.js apps.
+
+Runs X workers and respawns them if they go down.
+Correctly handles signals from the OS.
 
 ```js
-throng(start, { workers: 3 });
+const throng = require('throng');
 
-function start(id) {
+throng((id) => {
   console.log(`Started worker ${id}`);
+});
+```
 
-  process.on('SIGTERM', function() {
-    console.log(`Worker ${id} exiting`);
-    process.exit();
-  });
-}
+```
+$ node example
+Started worker 1
+Started worker 2
+Started worker 3
+Started worker 4
 ```
 
 ## Installation
@@ -21,20 +27,48 @@ function start(id) {
 npm install --save throng
 ```
 
+For older versions of node (< 4.x), use throng 2.x.
+
 ## Use
 
 ```js
-throng(startFunction, options);
+throng(startFunction);
 ```
 
-## All Options
+Provide a worker count:
 
 ```js
-throng(start, {
-  workers: 4,       // Number of workers; defaults to CPU count
-  lifetime: 10000,  // ms to keep cluster alive; defaults to Infinity
-  grace: 4000       // ms grace period after worker SIGTERM; defaults to 5000
+throng(3, startFunction);
+```
+
+Specify more options:
+
+```js
+throng({ workers: 16, grace: 1000 }, startFunction);
+```
+
+Handle signals (for cleanup on a kill signal, for instance):
+
+```js
+throng((id) => {
+  console.log(`Started worker ${id}`);
+
+  process.on('SIGTERM', function() {
+    console.log(`Worker ${id} exiting`);
+    console.log('Cleanup here');
+    process.exit();
+  });
 });
+```
+
+## All Options (with defaults)
+
+```js
+throng({
+  workers: 4,       // Number of workers (cpu count)
+  lifetime: 10000,  // ms to keep cluster alive (Infinity)
+  grace: 4000       // ms grace period after worker SIGTERM (5000)
+}, startFn);
 ```
 
 ## Tests
