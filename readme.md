@@ -26,6 +26,8 @@ Started worker 3
 npm install --save throng
 ```
 
+For older versions of node (< 4.x), use throng 2.x.
+
 ## Use
 
 ```js
