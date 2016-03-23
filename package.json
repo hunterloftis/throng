@@ -18,13 +18,13 @@
     "test": "mocha"
   },
   "engines": {
-    "node": ">= 0.10.x"
+    "node": "4"
   },
   "author": "Hunter Loftis <hunter@hunterloftis.com>",
   "license": "MIT",
   "devDependencies": {
-    "chai": "3.5.0",
-    "mocha": "2.4.5"
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
   },
   "dependencies": {
     "lodash.defaults": "^4.0.1"
