@@ -2,6 +2,9 @@
 
 Dead-simple one-liner for clustered apps.
 
+Runs X workers and respawns them if they go down.
+Correctly handles signals from the OS.
+
 ```js
 const throng = require('throng');
 
