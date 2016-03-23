@@ -27,6 +27,6 @@
     "mocha": "2.4.5"
   },
   "dependencies": {
-    "lodash": "4.3.0"
+    "lodash.defaults": "^4.0.1"
   }
 }
