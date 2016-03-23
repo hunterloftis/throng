@@ -18,7 +18,7 @@
     "test": "mocha"
   },
   "engines": {
-    "node": ">= 5.x"
+    "node": ">= 4.0.0"
   },
   "author": "Hunter Loftis <hunter@hunterloftis.com>",
   "license": "MIT",
