@@ -1,8 +1,6 @@
 var throng = require('../..');
 
-throng(start, { lifetime: 0 });
-
-function start() {
+throng({ lifetime: 0 }, () => {
   console.log('worker');
   process.exit();
-}
+});

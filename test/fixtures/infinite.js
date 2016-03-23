@@ -1,8 +1,6 @@
 var throng = require('../..');
 
-throng(start, { workers: 3 });
-
-function start() {
+throng(3, () => {
   console.log('worker');
   process.exit();
-}
+});

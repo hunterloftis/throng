@@ -1,8 +1,11 @@
 var throng = require('../..');
 
-throng(start, { workers: 3, lifetime: 500 });
+const config = {
+  workers: 3,
+  lifetime: 500
+};
 
-function start() {
+throng(config, () => {
   console.log('worker');
   process.exit();
-}
+});

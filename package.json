@@ -1,6 +1,6 @@
 {
   "name": "throng",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "A simple worker-manager for clustered apps",
   "keywords": [
     "cluster",
@@ -15,7 +15,7 @@
     "test": "mocha"
   },
   "engines": {
-    "node": ">= 0.10.x"
+    "node": ">= 5.x"
   },
   "author": "Hunter Loftis <hunter@hunterloftis.com>",
   "license": "MIT",
