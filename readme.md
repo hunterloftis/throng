@@ -79,7 +79,7 @@ throng({
 ## A Complex example
 
 ```js
-const throng = require('./lib/throng');
+const throng = require('throng');
 
 throng({
   workers: 4,
@@ -89,7 +89,7 @@ throng({
 
 // This will only be called once
 function startMaster() {
-  console.log(`Started master`);
+  console.log('Started master');
 }
 
 // This will be called four times
