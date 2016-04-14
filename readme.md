@@ -74,8 +74,10 @@ throng((id) => {
 throng({
   workers: 4,       // Number of workers (cpu count)
   lifetime: 10000,  // ms to keep cluster alive (Infinity)
-  grace: 4000       // ms grace period after worker SIGTERM (5000)
-}, startFn);
+  grace: 4000,      // ms grace period after worker SIGTERM (5000)
+  master: masterFn, // Function to call when starting the master process
+  start: startFn    // Function to call when starting the worker processes
+});
 ```
 
 ## A Complex example
