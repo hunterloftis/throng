@@ -31,19 +31,15 @@ For older versions of node (< 4.x), use throng 2.x.
 
 ## Use
 
-Simplest; automatically fork 1 worker per CPU core:
-
 ```js
 throng(startFunction);
 ```
-
-Specify a number of workers:
+Simplest; fork 1 worker per CPU core.
 
 ```js
 throng(3, startFunction);
 ```
-
-Specify more options:
+Specify a number of workers.
 
 ```js
 throng({
@@ -53,8 +49,7 @@ throng({
   start: startFunction
 });
 ```
-
-Handle signals (for cleanup on a kill signal, for instance):
+More options.
 
 ```js
 throng((id) => {
@@ -67,6 +62,7 @@ throng((id) => {
   });
 });
 ```
+Handling signals (for cleanup on a kill signal, for instance).
 
 ## All Options (with defaults)
 
