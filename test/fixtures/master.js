@@ -3,8 +3,11 @@
 const throng = require('../../lib/throng');
 
 throng({
-  workers: 3,
   lifetime: 0,
+  workers: 2,
+  master: () => {
+    console.log('master');
+  },
   start: () => {
     console.log('worker');
     process.exit();

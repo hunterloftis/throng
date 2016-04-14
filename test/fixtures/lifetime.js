@@ -2,12 +2,11 @@
 
 const throng = require('../../lib/throng');
 
-const config = {
+throng({
   workers: 3,
-  lifetime: 500
-};
-
-throng(config, () => {
-  console.log('worker');
-  process.exit();
+  lifetime: 500,
+  start: () => {
+    console.log('worker');
+    process.exit();
+  }
 });
