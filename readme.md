@@ -69,10 +69,22 @@ Handling signals (for cleanup on a kill signal, for instance).
 ```js
 throng({
   workers: 4,       // Number of workers (cpu count)
+
   lifetime: 10000,  // ms to keep cluster alive (Infinity)
+
   grace: 4000,      // ms grace period after worker SIGTERM (5000)
+
   master: masterFn, // Function to call when starting the master process
-  start: startFn    // Function to call when starting the worker processes
+                    // master is a Promise and will resolve before `start`
+                    // function is called. Removing the possibility of a race
+                    // condition.
+
+  start: startFn,   // Function to call when starting the worker processes
+
+  env: {            // Additional env vars to place on worker processes
+    myenv1:'envVal',// that don't already exist on the master process
+    myenv2:'envVal2'
+  } 
 });
 ```
 
@@ -84,7 +96,12 @@ const throng = require('throng');
 throng({
   workers: 4,
   master: startMaster,
-  start: startWorker
+  start: startWorker,
+  env: {
+    NODE_ENV: 'dev',
+    MY_OTHER_ENV_VAR: 17,
+    THIS_VAL_TOO: 'value'
+  }
 });
 
 // This will only be called once
