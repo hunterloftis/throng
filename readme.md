@@ -2,6 +2,11 @@
 
 Dead-simple one-liner for clustered Node.js apps.
 
+[![npm package](https://img.shields.io/npm/v/throng.svg?style=flat-square)](https://www.npmjs.org/package/throng)
+[![Dependency Status](https://david-dm.org/hunterloftis/throng.svg?style=flat-square)](https://david-dm.org/hunterloftis/throng)
+[![devDependency Status](https://david-dm.org/hunterloftis/throng/dev-status.svg?style=flat-square)](https://david-dm.org/hunterloftis/throng#info=devDependencies)
+[![Build Status](https://travis-ci.org/hunterloftis/throng.svg?branch=master)](https://travis-ci.org/hunterloftis/throng)
+
 Runs X workers and respawns them if they go down.
 Correctly handles signals from the OS.
 
