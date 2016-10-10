@@ -92,7 +92,7 @@ describe('throng()', function() {
     });
   });
 
-  describe('signal handling', function() {
+  describe('signal handling in workers', function() {
 
     describe('with 3 workers that exit gracefully', function() {
       before(function(done) {
@@ -128,6 +128,53 @@ describe('throng()', function() {
     });
 
   });
+
+  describe('signal handling in master', function() {
+
+    describe('with SIGTERM (default)', function() {
+      before(function(done) {
+        var child = run(gracefulCmd, this, done);
+        setTimeout(function() { child.kill(); }, 750);
+      });
+      it('allows the workers to shut down', function() {
+        var exits = this.stdout.match(/exiting/g).length;
+        assert.equal(exits, 3);
+      });
+      it('exits with SIGTERM', function() {
+        assert.equal(this.signal, 'SIGTERM');
+      });
+    });
+
+    describe('with workers that fail to exit', function() {
+      before(function(done) {
+        var child = run(killCmd, this, done);
+        setTimeout(function() { child.kill(); }, 750);
+      });
+      it('notifies the workers that they should exit', function() {
+        var exits = this.stdout.match(/stayin alive/g).length;
+        assert.equal(exits, 3);
+      });
+      it('exits with SIGTERM', function() {
+        assert.equal(this.signal, 'SIGTERM');
+      });
+    });
+
+    describe('with SIGINT (default)', function() {
+      before(function(done) {
+        var child = run(gracefulCmd, this, done);
+        setTimeout(function() { child.kill('SIGINT'); }, 750);
+      });
+      it('allows the workers to shut down', function() {
+        var exits = this.stdout.match(/exiting/g).length;
+        assert.equal(exits, 3);
+      });
+      it('exits with SIGINT', function() {
+        assert.equal(this.signal, 'SIGINT');
+      });
+    });
+
+  });
+
 });
 
 function run(file, context, done) {
@@ -140,8 +187,9 @@ function run(file, context, done) {
   child.stderr.on('data', function(data) {
     context.stdout += data.toString();
   });
-  child.on('close', function(code) {
+  child.on('close', function(code, signal) {
     context.endTime = Date.now();
+    context.signal = signal;
     done();
   });
   return child;
