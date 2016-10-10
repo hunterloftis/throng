@@ -15,6 +15,7 @@ const masterCmd = path.join(__dirname, 'fixtures', 'master');
 const gracefulCmd = path.join(__dirname, 'fixtures', 'graceful');
 const killCmd = path.join(__dirname, 'fixtures', 'kill');
 const infiniteCmd = path.join(__dirname, 'fixtures', 'infinite');
+const sigusr2Cmd = path.join(__dirname, 'fixtures', 'sigusr2');
 
 describe('throng()', function() {
 
@@ -170,6 +171,20 @@ describe('throng()', function() {
       });
       it('exits with SIGINT', function() {
         assert.equal(this.signal, 'SIGINT');
+      });
+    });
+
+    describe('with custom signal handling', function() {
+      before(function(done) {
+        var child = run(sigusr2Cmd, this, done);
+        setTimeout(function() { child.kill('SIGUSR2'); }, 750);
+      });
+      it('allows the workers to shut down', function() {
+        var exits = this.stdout.match(/exiting/g).length;
+        assert.equal(exits, 3);
+      });
+      it('exits with SIGUSR2', function() {
+        assert.equal(this.signal, 'SIGUSR2');
       });
     });
 

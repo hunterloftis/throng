@@ -68,11 +68,13 @@ Handling signals (for cleanup on a kill signal, for instance).
 
 ```js
 throng({
-  workers: 4,       // Number of workers (cpu count)
-  lifetime: 10000,  // ms to keep cluster alive (Infinity)
-  grace: 4000,      // ms grace period after worker SIGTERM (5000)
-  master: masterFn, // Function to call when starting the master process
-  start: startFn    // Function to call when starting the worker processes
+  workers: 4,                     // Number of workers (cpu count)
+  lifetime: 10000,                // ms to keep cluster alive (Infinity)
+  grace: 4000,                    // ms grace period after worker SIGTERM (5000)
+  master: masterFn,               // Function to call when starting the master process
+  start: startFn,                 // Function to call when starting the worker processes
+  extraShutdownSignal: 'SIGUSR2'  // Extra signal (beyond SIGINT & SIGTERM) in response
+                                  // to which to shut down the cluster
 });
 ```
 
