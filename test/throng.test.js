@@ -15,6 +15,9 @@ const masterCmd = path.join(__dirname, 'fixtures', 'master');
 const gracefulCmd = path.join(__dirname, 'fixtures', 'graceful');
 const killCmd = path.join(__dirname, 'fixtures', 'kill');
 const infiniteCmd = path.join(__dirname, 'fixtures', 'infinite');
+const beforeExitCmd = path.join(__dirname, 'fixtures', 'beforeExit');
+const beforeExitGracefulCmd = path.join(__dirname, 'fixtures', 'beforeExit-graceful');
+const beforeExitKillCmd = path.join(__dirname, 'fixtures', 'beforeExit-kill');
 
 describe('throng()', function() {
 
@@ -124,6 +127,39 @@ describe('throng()', function() {
       });
       it('kills the workers after 250ms', function() {
         assert.closeTo(this.endTime - this.startTime, 1000, 100);
+      });
+    });
+
+  });
+
+  describe('`beforeExit` handler', function() {
+
+    describe('with 3 workers that immediately exit', function() {
+      before(function(done) {
+        run(beforeExitCmd, this, done);
+      });
+      it('the `beforeExit` handler is invoked', function() {
+        assert.notEqual(this.stdout.indexOf('Master exiting in response to undefined'), -1);
+      });
+    });
+
+    describe('with 3 workers that exit gracefully', function() {
+      before(function(done) {
+        var child = run(beforeExitGracefulCmd, this, done);
+        setTimeout(function() { child.kill(); }, 750);
+      });
+      it('the `beforeExit` handler is invoked', function() {
+        assert.notEqual(this.stdout.indexOf('Master exiting in response to SIGTERM'), -1);
+      });
+    });
+
+    describe('with 3 workers that fail to exit', function() {
+      before(function(done) {
+        var child = run(beforeExitKillCmd, this, done);
+        setTimeout(function() { child.kill(); }, 750);
+      });
+      it('the `beforeExit` handler is invoked', function() {
+        assert.notEqual(this.stdout.indexOf('Master exiting in response to SIGTERM'), -1);
       });
     });
 

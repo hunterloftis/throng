@@ -90,6 +90,14 @@ throng({
 // This will only be called once
 function startMaster() {
   console.log('Started master');
+
+  process.on('beforeExit', () => {
+    // `throng.shutdownSignal` will be `undefined` if the cluster exited without
+    // being killed e.g. if the workers exited by themselves and `lifetime` is 0.
+    console.log(`Master exiting in response to ${throng.shutdownSignal}...`);
+    // Making async calls will keep the master alive.
+    console.log('(master cleanup would happen here)');
+  });
 }
 
 // This will be called four times
@@ -114,6 +122,8 @@ Started worker 4
 
 $ killall node
 
+Master exiting in response to SIGTERM...
+(master cleanup would happen here)
 Worker 3 exiting...
 Worker 4 exiting...
 (cleanup would happen here)
