@@ -1,6 +1,6 @@
 {
   "name": "@mixmaxhq/throng",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "A simple worker-manager for clustered apps",
   "keywords": [
     "cluster",
