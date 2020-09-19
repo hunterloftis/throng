@@ -1,9 +1,7 @@
 'use strict';
 
 const assert = require('chai').assert;
-const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
-const child = require('child_process');
 const path = require('path');
 const cpuCount = require('os').cpus().length;
 
@@ -94,7 +92,7 @@ describe('throng()', function() {
 
   describe('signal handling', function() {
 
-    describe('with 3 workers that exit gracefully', function() {
+    describe('SIGTERM with 3 workers that exit gracefully', function() {
       before(function(done) {
         var child = run(gracefulCmd, this, done);
         setTimeout(function() { child.kill(); }, 750);
@@ -109,7 +107,7 @@ describe('throng()', function() {
       });
     });
 
-    describe('with 3 workers that fail to exit', function() {
+    describe('SIGTERM with 3 workers that fail to exit', function() {
       before(function(done) {
         var child = run(killCmd, this, done);
         setTimeout(function() { child.kill(); }, 750);
@@ -127,11 +125,46 @@ describe('throng()', function() {
       });
     });
 
+    describe('SIGINT on the process group (Ctrl+C) with 3 workers that exit gracefully', function() {
+      before(function(done) {
+        var child = run2(gracefulCmd, this, done);
+        setTimeout(function() { process.kill(-child.pid, 'SIGINT') }, 750)
+      });
+      it('starts 3 workers', function() {
+        var starts = this.stdout.match(/worker/g).length;
+        assert.equal(starts, 3);
+      });
+      it('allows the workers to shut down', function() {
+        var exits = this.stdout.match(/exiting/g).length;
+        assert.equal(exits, 3);
+      });
+    });
+
   });
 });
 
 function run(file, context, done) {
   var child = spawn('node', [file]);
+  context.stdout = '';
+  context.startTime = Date.now();
+  child.stdout.on('data', function(data) {
+    context.stdout += data.toString();
+  });
+  child.stderr.on('data', function(data) {
+    context.stdout += data.toString();
+  });
+  child.on('close', function(code) {
+    context.endTime = Date.now();
+    done();
+  });
+  return child;
+}
+
+function run2(file, context, done) {
+  var child = spawn('node', [file], {
+    detached: true,
+    // stdio: ['ignore', 'ignore', 'ignore']
+  });
   context.stdout = '';
   context.startTime = Date.now();
   child.stdout.on('data', function(data) {

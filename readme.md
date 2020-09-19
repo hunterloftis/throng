@@ -109,8 +109,7 @@ Started worker 1
 Started worker 2
 Started worker 3
 Started worker 4
-
-$ killall node
+^C (Ctrl+C)
 Worker 3 exiting...
 Worker 4 exiting...
 (cleanup would happen here)
