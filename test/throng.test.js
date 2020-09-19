@@ -13,6 +13,7 @@ const masterCmd = path.join(__dirname, 'fixtures', 'master');
 const gracefulCmd = path.join(__dirname, 'fixtures', 'graceful');
 const killCmd = path.join(__dirname, 'fixtures', 'kill');
 const infiniteCmd = path.join(__dirname, 'fixtures', 'infinite');
+const gracefulSigusr2Cmd = path.join(__dirname, 'fixtures', 'graceful-sigusr2');
 
 describe('throng()', function() {
 
@@ -129,6 +130,21 @@ describe('throng()', function() {
       before(function(done) {
         var child = run2(gracefulCmd, this, done);
         setTimeout(function() { process.kill(-child.pid, 'SIGINT') }, 750)
+      });
+      it('starts 3 workers', function() {
+        var starts = this.stdout.match(/worker/g).length;
+        assert.equal(starts, 3);
+      });
+      it('allows the workers to shut down', function() {
+        var exits = this.stdout.match(/exiting/g).length;
+        assert.equal(exits, 3);
+      });
+    });
+
+    describe('Custom shutdown signal with 3 workers that exit gracefully', function() {
+      before(function(done) {
+        var child = run(gracefulSigusr2Cmd, this, done);
+        setTimeout(function() { child.kill('SIGUSR2'); }, 750);
       });
       it('starts 3 workers', function() {
         var starts = this.stdout.match(/worker/g).length;
