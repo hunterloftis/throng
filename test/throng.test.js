@@ -129,7 +129,7 @@ describe('throng()', function() {
     describe('SIGINT on the process group (Ctrl+C) with 3 workers that exit gracefully', function() {
       before(function(done) {
         var child = run2(gracefulCmd, this, done);
-        setTimeout(function() { process.kill(-child.pid, 'SIGINT') }, 750)
+        setTimeout(function() { process.kill(-child.pid, 'SIGINT') }, 1000)
       });
       it('starts 3 workers', function() {
         var starts = this.stdout.match(/worker/g).length;
