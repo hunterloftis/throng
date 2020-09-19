@@ -27,8 +27,6 @@ Started worker 4
 npm install --save throng
 ```
 
-For older versions of node (< 4.x), use throng 2.x.
-
 ## Use
 
 ```js
@@ -105,7 +103,7 @@ function startWorker(id) {
 ```
 
 ```
-$ node example-complex.js
+$ node example-complex.js &
 Started master
 Started worker 1
 Started worker 2
@@ -113,7 +111,6 @@ Started worker 3
 Started worker 4
 
 $ killall node
-
 Worker 3 exiting...
 Worker 4 exiting...
 (cleanup would happen here)
@@ -124,8 +121,10 @@ Worker 1 exiting...
 (cleanup would happen here)
 ```
 
-## Tests
+## Test
 
 ```
-npm test
+$ docker-compose run --rm dev
+
+node@docker:/home/app$ npm test
 ```
