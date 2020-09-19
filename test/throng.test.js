@@ -128,7 +128,7 @@ describe('throng()', function() {
 
     describe('SIGINT on the process group (Ctrl+C) with 3 workers that exit gracefully', function() {
       before(function(done) {
-        var child = run2(gracefulCmd, this, done);
+        var child = run(gracefulCmd, this, done);
         setTimeout(function() { process.kill(-child.pid, 'SIGINT') }, 1000)
       });
       it('starts 3 workers', function() {
@@ -160,27 +160,7 @@ describe('throng()', function() {
 });
 
 function run(file, context, done) {
-  var child = spawn('node', [file]);
-  context.stdout = '';
-  context.startTime = Date.now();
-  child.stdout.on('data', function(data) {
-    context.stdout += data.toString();
-  });
-  child.stderr.on('data', function(data) {
-    context.stdout += data.toString();
-  });
-  child.on('close', function(code) {
-    context.endTime = Date.now();
-    done();
-  });
-  return child;
-}
-
-function run2(file, context, done) {
-  var child = spawn('node', [file], {
-    detached: true,
-    // stdio: ['ignore', 'ignore', 'ignore']
-  });
+  var child = spawn('node', [file], { detached: true });
   context.stdout = '';
   context.startTime = Date.now();
   child.stdout.on('data', function(data) {
