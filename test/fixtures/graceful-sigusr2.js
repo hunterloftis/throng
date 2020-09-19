@@ -4,7 +4,7 @@ const throng = require('../../lib/throng');
 
 throng({
     workers: 3,
-    shutdown: ['SIGUSR2'],
+    signals: ['SIGUSR2'],
     start: () => {
         console.log('worker');
 
