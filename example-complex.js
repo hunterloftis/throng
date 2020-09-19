@@ -5,6 +5,10 @@ throng({ workers: 4, master, start })
 // This will only be called once
 function master() {
   console.log(`Started master`);
+
+  process.once('beforeExit', code => {
+    console.log(`Master cleanup would happen here for code ${code}.`)
+  })
 }
 
 // This will be called four times
