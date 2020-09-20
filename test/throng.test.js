@@ -80,6 +80,7 @@ describe('throng()', function() {
   })
 
   describe('signal handling', function() {
+    if (process.platform === 'win32') return  // windows does not support signal-based process shutdown
 
     describe('SIGTERM with 3 workers that exit gracefully', function() {
       before(function(done) {
