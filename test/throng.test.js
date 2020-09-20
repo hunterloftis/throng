@@ -156,6 +156,15 @@ describe('throng()', function() {
       assert.equal(starts, 4)
     })
   })
+
+  describe('Async master and worker functions', () => {
+    before(done => {
+      run(fixture('async'), this, done)
+    })
+    it('completes master before starting workers', () => {
+      assert.equal(this.stdout, 'master\nworker\n')
+    })
+  })
 })
 
 function run(file, context, done) {
