@@ -122,11 +122,11 @@ describe('throng()', function() {
       })
       it('starts 3 workers', function() {
         var starts = this.stdout.match(/worker/g).length
-        assert.equal(starts, 3)
+        assert.equal(starts, 3, this.stdout)
       })
       it('allows the workers to shut down', function() {
         var exits = this.stdout.match(/exiting/g).length
-        assert.equal(exits, 3)
+        assert.equal(exits, 3, this.stdout)
       })
     })
 

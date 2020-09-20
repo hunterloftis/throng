@@ -1,27 +1,27 @@
-const throng = require('./lib/throng');
+const throng = require('./lib/throng')
 
-throng({ workers: 4, master, start })
+throng({ master, worker, count: 4 })
 
 // This will only be called once
 function master() {
-  console.log(`Started master`);
+  process.once('beforeExit', cleanup)
+  
+  console.log(`Started master`)
 
-  process.once('beforeExit', code => {
-    console.log(`Master cleanup would happen here for code ${code}.`)
-  })
+  function cleanup() {
+    console.log(`Master cleanup goes here.`)
+  }
 }
 
 // This will be called four times
-function start(id) {
-  console.log(`Started worker ${ id }`);
+function worker(id, disconnect) {
+  process.once('SIGTERM', shutdown)
+  process.once('SIGINT', shutdown)
 
-  process.once('SIGTERM', shutdown);
-  process.once('SIGINT', shutdown);
+  console.log(`Started worker ${ id }`)
 
   function shutdown() {
-    process.removeAllListeners();
-    console.log(`Worker ${ id } exiting...`);
-    console.log('(cleanup would happen here)');
-    process.exit();
+    console.log(`Worker ${ id } cleanup goes here.`)
+    disconnect()
   }
 }
