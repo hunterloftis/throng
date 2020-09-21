@@ -7,7 +7,7 @@ async function master() {
     console.log('master')
 }
 
-async function worker() {
+async function worker(id, disconnect) {
     console.log('worker')
-    process.exit()
+    disconnect()
 }
