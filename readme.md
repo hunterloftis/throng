@@ -27,7 +27,7 @@ $ npm install --save throng
 
 ## Use
 
-### Fork 1 worker per CPU core:
+### Fork 1 worker per CPU:
 
 ```js
 throng(workerStartFunction)
@@ -67,7 +67,7 @@ function worker(id, disconnect) {
 })
 ```
 
-## All Options (with defaults)
+## All options (with defaults)
 
 ```js
 throng({
