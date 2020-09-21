@@ -2,15 +2,13 @@
 
 Dead-simple one-liner for clustered Node.js apps.
 
-Runs X workers and respawns them if they go down.
+Forks N workers and creates new ones if they go down.
 Correctly handles signals from the OS.
 
 ```js
-const throng = require('throng');
+const throng = require('throng')
 
-throng((id) => {
-  console.log(`Started worker ${id}`);
-});
+throng(id => console.log(`Started worker ${id}`))
 ```
 
 ```
@@ -24,83 +22,90 @@ Started worker 4
 ## Installation
 
 ```
-npm install --save throng
+$ npm install --save throng
 ```
-
-For older versions of node (< 4.x), use throng 2.x.
 
 ## Use
 
-```js
-throng(startFunction);
-```
-Simplest; fork 1 worker per CPU core.
+### Fork 1 worker per CPU:
 
 ```js
-throng(3, startFunction);
+throng(workerStartFunction)
 ```
-Specify a number of workers.
+
+### Specify the number of workers:
+
+```js
+throng({ worker: workerStartFunction, count: 3 })
+```
+
+### More options:
 
 ```js
 throng({
-  workers: 16,
-  grace: 1000,
-  master: masterFunction,
-  start: startFunction
-});
+  master: masterStartFunction,
+  worker: workerStartFunction,
+  count: 16,
+  grace: 1000
+})
 ```
-More options.
+
+### Handling signals:
+
+(for cleaning up before disconnecting a worker on a SIGTERM, for instance)
 
 ```js
-throng((id) => {
-  console.log(`Started worker ${id}`);
+throng({ worker })
 
-  process.on('SIGTERM', function() {
-    console.log(`Worker ${id} exiting`);
-    console.log('Cleanup here');
-    process.exit();
-  });
-});
+function worker(id, disconnect) {
+  console.log(`Started worker ${id}`)
+
+  process.on('SIGTERM', () => {
+    console.log(`Worker ${id} exiting (cleanup here)`)
+    disconnect()
+  })
+})
 ```
-Handling signals (for cleanup on a kill signal, for instance).
 
-## All Options (with defaults)
+## All options (with defaults)
 
 ```js
 throng({
-  workers: 4,       // Number of workers (cpu count)
-  lifetime: 10000,  // ms to keep cluster alive (Infinity)
-  grace: 4000,      // ms grace period after worker SIGTERM (5000)
-  master: masterFn, // Function to call when starting the master process
-  start: startFn    // Function to call when starting the worker processes
-});
+  master: masterFn,               // Fn to call in master process (can be async)
+  worker: workerFn,               // Fn to call in cluster workers (can be async)
+  count: 4,                       // Number of workers (cpu count)
+  lifetime: Infinity,             // Min time to keep cluster alive (ms)
+  grace: 5000,                    // Grace period between signal and hard shutdown (ms)
+  signals: ['SIGTERM', 'SIGINT']  // Signals that trigger a shutdown (proxied to workers)
+})
 ```
 
-## A Complex example
+## A complex example
 
 ```js
-const throng = require('throng');
+const throng = require('throng')
 
-throng({
-  workers: 4,
-  master: startMaster,
-  start: startWorker
-});
+throng({ master, worker, count: 4 })
 
 // This will only be called once
-function startMaster() {
-  console.log('Started master');
+function master() {
+  console.log('Started master')
+
+  process.once('beforeExit', () => {
+    console.log('Master cleanup.')
+  })
 }
 
 // This will be called four times
-function startWorker(id) {
-  console.log(`Started worker ${ id }`);
+function worker(id, disconnect) {
+  console.log(`Started worker ${ id }`)
+  process.once('SIGTERM', shutdown)
+  process.once('SIGINT', shutdown)
 
-  process.on('SIGTERM', () => {
-    console.log(`Worker ${ id } exiting...`);
-    console.log('(cleanup would happen here)');
-    process.exit();
-  });
+  function shutdown() {
+    console.log(`Worker ${ id } cleanup.`)
+    disconnect()
+  }
 }
 ```
 
@@ -108,24 +113,30 @@ function startWorker(id) {
 $ node example-complex.js
 Started master
 Started worker 1
-Started worker 2
 Started worker 3
+Started worker 2
 Started worker 4
-
-$ killall node
-
-Worker 3 exiting...
-Worker 4 exiting...
-(cleanup would happen here)
-(cleanup would happen here)
-Worker 2 exiting...
-(cleanup would happen here)
-Worker 1 exiting...
-(cleanup would happen here)
+^C
+Worker 1 cleanup.
+Worker 3 cleanup.
+Worker 2 cleanup.
+Worker 4 cleanup.
+Master cleanup.
 ```
 
-## Tests
+## Staying alive
+
+Throng forks replacements for workers that crash so your cluster can continue working through failures.
 
 ```
-npm test
+$ node example-crashy.js
+-1--2--3--4--2--1--3--4--crash!--1--3--4--crash!--5--3--4--6--5--3--4--crash!--6--crash!--crash!--7--6--8--9--7--6--8--9--crash!--7--6--9--10--7--6--9--10--crash!--7--9--10--11--7--crash!--9--crash!--7--12--9--13--crash!--12--9--crash!--crash!--crash!--14--crash!--12--15--crash!--14--18--15--19--14--18--15--crash!--19--14--crash!--15--20--14--21--15--20--14--21--15--20--14--21--15--20--14--21--15-
+```
+
+## Test
+
+```
+$ docker-compose run --rm dev
+
+node@docker:/home/app$ npm test
 ```

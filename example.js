@@ -1,5 +1,3 @@
-const throng = require('./lib/throng');
+const throng = require('./lib/throng')
 
-throng((id) => {
-  console.log(`Started worker ${id}`);
-});
+throng(id => console.log(`Started worker ${id}`))
