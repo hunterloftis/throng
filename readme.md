@@ -76,9 +76,9 @@ function worker(id, disconnect) {
 
 ```js
 throng({
-  master: masterFn,               // Fn to call in master process (can be async)
-  worker: workerFn,               // Fn to call in cluster workers (can be async)
-  count: 4,                       // Number of workers (cpu count)
+  master: () => {},               // Fn to call in master process (can be async)
+  worker: yourWorkerFunc,         // Fn to call in cluster workers (can be async)
+  count: os.cpus().length,        // Number of workers
   lifetime: Infinity,             // Min time to keep cluster alive (ms)
   grace: 5000,                    // Grace period between signal and hard shutdown (ms)
   signals: ['SIGTERM', 'SIGINT']  // Signals that trigger a shutdown (proxied to workers)
