@@ -116,17 +116,19 @@ describe('throng()', function() {
     })
 
     describe('SIGINT on the process group (Ctrl+C) with 3 workers that exit gracefully', function() {
-      before(function(done) {
-        var child = run(fixture('graceful'), this, done)
-        setTimeout(function() { process.kill(-child.pid, 'SIGINT') }, 1000)
+      before(async function() {
+        const [ proc, done ] = run2(fixture('graceful'))
+        setTimeout(function() { process.kill(-proc.pid, 'SIGINT') }, 1000)
+        const [ out, time ] = await done
+        this.out = out
       })
       it('starts 3 workers', function() {
-        var starts = this.stdout.match(/worker/g).length
-        assert.equal(starts, 3, this.stdout)
+        var starts = this.out.match(/worker/g).length
+        assert.equal(starts, 3, this.out)
       })
       it('allows the workers to shut down', function() {
-        var exits = this.stdout.match(/exiting/g).length
-        assert.equal(exits, 3, this.stdout)
+        var exits = this.out.match(/exiting/g).length
+        assert.equal(exits, 3, this.out)
       })
     })
 
@@ -183,6 +185,23 @@ function run(file, context, done) {
     done()
   })
   return child
+}
+
+function run2(file) {
+  const child = spawn('node', [file], { detached: true })
+  const startTime = Date.now()
+  let out = ''
+
+  child.stdout.on('data', data => out += data.toString())
+  child.stderr.on('data', data => out += data.toString())
+  
+  const done = new Promise((resolve, reject) => {
+    child.on('close', () => {
+      resolve([ out, Date.now() - startTime ])
+    })
+  })
+
+  return [ child, done ]
 }
 
 function fixture(name) {

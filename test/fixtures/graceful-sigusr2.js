@@ -8,7 +8,7 @@ throng({
     start: (id, disconnect) => {
         console.log('worker');
 
-        process.once('SIGUSR2', exit);
+        process.on('SIGUSR2', exit);
       
         function exit() {
           console.log(`exiting`);
