@@ -1,4 +1,4 @@
-const throng = require('./lib/throng')
+const throng = require('../lib/throng')
 
 throng({ worker, count: 4 })
 
@@ -7,5 +7,5 @@ function worker(id) {
     setTimeout(() => { 
         process.stdout.write('-crash!-')
         process.exit()
-    }, Math.random() * 10000)
+    }, Math.random() * 5000 + 5000)
 }

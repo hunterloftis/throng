@@ -1,4 +1,4 @@
-const throng = require('./lib/throng')
+const throng = require('../lib/throng')
 
 throng({ master, worker, count: 4 })
 
