@@ -17,7 +17,7 @@ throng(id => console.log(`Started worker ${id}`))
 ```
 
 ```
-$ node example
+$ node examples/basic
 Started worker 1
 Started worker 2
 Started worker 3
@@ -115,7 +115,7 @@ function worker(id, disconnect) {
 ```
 
 ```
-$ node example-complex.js
+$ node examples/complex
 Started master
 Started worker 1
 Started worker 3
@@ -134,7 +134,7 @@ Master cleanup.
 Throng forks replacements for workers that crash so your cluster can continue working through failures.
 
 ```
-$ node example-crashy.js
+$ node examples/crashy
 -1--2--3--4--2--1--3--4--crash!--1--3--4--crash!--5--3--4--6--5--3--4--crash!--6--crash!--crash!--7--6--8--9--7--6--8--9--crash!--7--6--9--10--7--6--9--10--crash!--7--9--10--11--7--crash!--9--crash!--7--12--9--13--crash!--12--9--crash!--crash!--crash!--14--crash!--12--15--crash!--14--18--15--19--14--18--15--crash!--19--14--crash!--15--20--14--21--15--20--14--21--15--20--14--21--15--20--14--21--15-
 ```
 
