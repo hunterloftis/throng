@@ -96,19 +96,25 @@ throng({ master, worker, count: 4 })
 function master() {
   console.log('Started master')
 
-  process.once('beforeExit', () => {
+  process.on('beforeExit', () => {
     console.log('Master cleanup.')
   })
 }
 
 // This will be called four times
 function worker(id, disconnect) {
-  console.log(`Started worker ${ id }`)
-  process.once('SIGTERM', shutdown)
-  process.once('SIGINT', shutdown)
+  let exited = false
 
-  function shutdown() {
-    console.log(`Worker ${ id } cleanup.`)
+  console.log(`Started worker ${ id }`)
+  process.on('SIGTERM', shutdown)
+  process.on('SIGINT', shutdown)
+
+  async function shutdown() {
+    if (exited) return
+    exited = true
+
+    await new Promise(r => setTimeout(r, 300))  // simulate async cleanup work
+    console.log(`Worker ${ id } cleanup done.`)
     disconnect()
   }
 }
@@ -122,10 +128,10 @@ Started worker 3
 Started worker 2
 Started worker 4
 ^C
-Worker 1 cleanup.
-Worker 3 cleanup.
-Worker 2 cleanup.
-Worker 4 cleanup.
+Worker 1 cleanup done.
+Worker 3 cleanup done.
+Worker 2 cleanup done.
+Worker 4 cleanup done.
 Master cleanup.
 ```
 

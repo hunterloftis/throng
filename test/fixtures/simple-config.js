@@ -2,7 +2,7 @@ const throng = require('../../lib/throng')
 
 throng({ worker, count: 4, lifetime: 0 })
 
-function worker() {
+function worker(id, disconnect) {
     console.log('worker')
-    process.exit()
+    disconnect()
 }

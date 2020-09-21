@@ -1,15 +1,18 @@
-'use strict';
-
-const throng = require('../../lib/throng');
+const throng = require('../../lib/throng')
 
 throng(3, (id, disconnect) => {
-  console.log('worker');
+  let exited = false
 
-  process.once('SIGTERM', exit)
-  process.once('SIGINT', exit)
+  console.log('worker')
+  process.on('SIGTERM', exit)
+  process.on('SIGINT', exit)
 
   async function exit() {
+    if (exited) return
+    exited = true
+    
+    await new Promise(r => setTimeout(r, 100))  // simulate async cleanup
     console.log('exiting')
     disconnect()
   }
-});
+})
