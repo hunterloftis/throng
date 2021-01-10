@@ -44,6 +44,16 @@ throng(workerStartFunction)
 throng({ worker: workerStartFunction, count: 3 })
 ```
 
+### Disable cluster.schedulingPolicy:
+
+```js
+throng({ 
+  worker: workerStartFunction, 
+  lifetime: Infinity, 
+  schedulingPolicy: false
+})
+```
+
 ### More options:
 
 ```js
@@ -81,6 +91,7 @@ throng({
   count: os.cpus().length,        // Number of workers
   lifetime: Infinity,             // Min time to keep cluster alive (ms)
   grace: 5000,                    // Grace period between signal and hard shutdown (ms)
+  schedulingPolicy: true,         // Manipulate and force cluster.schedulingPolicy as it is SCHED_RR by default on all operating systems except Windows
   signals: ['SIGTERM', 'SIGINT']  // Signals that trigger a shutdown (proxied to workers)
 })
 ```

@@ -77,6 +77,50 @@ describe('throng()', function() {
     })
   })
 
+  if (process.platform === 'win32')
+    describe('with schedulingPolicy on Win32', function() {
+      before(async function() {
+        const [ proc, done ] = run(fixture('platform'))
+          const [ out, time ] = await done
+          this.out = out
+      })
+      it('cluster.SCHED_RR', function() {
+        var master = this.out.match(/master/g).length
+        assert.equal(master, 1)
+      })
+      
+      before(async function() {
+        const [ proc, done ] = run(fixture('platform-norr'))
+          const [ out, time ] = await done
+          this.out = out
+      })
+      it('cluster.SCHED_NONE', function() {
+        var master = this.out.match(/master/g).length
+        assert.equal(master, 1)
+      })
+    })
+  else 
+  describe('with schedulingPolicy', function() {
+    before(async function() {
+      const [ proc, done ] = run(fixture('platform'))
+        const [ out, time ] = await done
+        this.out = out
+    })
+    it('cluster.SCHED_RR', function() {
+      var master = this.out.match(/master/g).length
+      assert.equal(master, 1)
+    })
+    before(async function() {
+      const [ proc, done ] = run(fixture('platform-norr'))
+        const [ out, time ] = await done
+        this.out = out
+    })
+    it('cluster.SCHED_NONE', function() {
+      var master = this.out.match(/master/g).length
+      assert.equal(master, 1)
+    })
+  })
+
   describe('with a master function and two workers', function() {
     before(async function() {
       const [ proc, done ] = run(fixture('master'))
